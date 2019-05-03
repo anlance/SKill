@@ -1,6 +1,7 @@
 package club.anlan.sKill.controller;
 
 import club.anlan.sKill.domain.User;
+import club.anlan.sKill.redis.UserKey;
 import club.anlan.sKill.result.Result;
 import club.anlan.sKill.service.RedisService;
 import club.anlan.sKill.service.UserService;
@@ -43,15 +44,18 @@ public class Sample {
 
     @RequestMapping("/redis/get")
     @ResponseBody
-    public Result<String> redisGet(){
-        String v1 = redisService.get("key2",String.class);
-        return Result.success(v1);
+    public Result<User> redisGet(){
+        User user = redisService.get(UserKey.getById,""+1,User.class);
+        return Result.success(user);
     }
 
     @RequestMapping("/redis/set")
     @ResponseBody
     public Result<Boolean> redisSet(){
-        Boolean flag = redisService.set("key2","lixianghe");
+        User user = new User();
+        user.setId(1);
+        user.setName("faker");
+        Boolean flag = redisService.set(UserKey.getById,"1",user);
         return Result.success(flag);
     }
 
