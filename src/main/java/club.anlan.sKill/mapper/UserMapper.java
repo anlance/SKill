@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 public interface UserMapper {
 
     @Select("select * from user where id = #{id}")
-    User getById(@Param("id") int id);
+    User getById(@Param("id") long id);
 
     @Insert("insert into user(id,name) values (#{id},#{name})")
     int insert(User user);

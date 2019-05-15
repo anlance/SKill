@@ -38,7 +38,6 @@ public class Sample {
     @RequestMapping("/db/tx")
     @ResponseBody
     public Result<Boolean> dbTX(){
-        userService.tx();
         return Result.success(true);
     }
 
@@ -53,8 +52,6 @@ public class Sample {
     @ResponseBody
     public Result<Boolean> redisSet(){
         User user = new User();
-        user.setId(1);
-        user.setName("faker");
         Boolean flag = redisService.set(UserKey.getById,"1",user);
         return Result.success(flag);
     }
