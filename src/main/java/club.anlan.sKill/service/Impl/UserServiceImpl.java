@@ -10,10 +10,8 @@ import club.anlan.sKill.service.UserService;
 import club.anlan.sKill.util.MD5Util;
 import club.anlan.sKill.util.UUIDUtil;
 import club.anlan.sKill.vo.LoginVo;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -49,18 +47,28 @@ public class UserServiceImpl implements UserService {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         //生成 Token
         String token = UUIDUtil.uuid();
+        addCookie(response,token,user);
+        return true;
+    }
+
+    public User getByToken(HttpServletResponse response, String token) {
+        if(StringUtils.isEmpty(token)) {
+            return null;
+        }
+        User user = redisService.get(UserKey.token, token, User.class);
+        //延长有效期
+        if(user != null) {
+            addCookie(response, token, user);
+        }
+        return user;
+    }
+
+    private void addCookie(HttpServletResponse response, String token, User user){
         redisService.set(UserKey.token,token,user);
         Cookie cookie = new Cookie(COOKIE_NAME_TOKEN,token);
         cookie.setMaxAge(UserKey.token.expireSeconds());
         cookie.setPath("/");
         response.addCookie(cookie);
-        return true;
-    }
-
-    public User getByToken(String token) {
-        if(StringUtils.isEmpty(token))
-            return null;
-        return redisService.get(UserKey.token,token,User.class);
     }
 
 
