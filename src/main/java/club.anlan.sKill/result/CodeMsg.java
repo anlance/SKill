@@ -1,7 +1,7 @@
 package club.anlan.sKill.result;
 
 public class CodeMsg {
-	private int code;
+    private int code;
 	private String msg;
 	
 	//通用异常
@@ -20,8 +20,9 @@ public class CodeMsg {
 	//订单模块 5004XX
 	
 	//秒杀模块 5005XX
-	
-	
+	public static CodeMsg SKILL_OVER = new CodeMsg(500500,"商品已经秒杀完毕");
+	public static CodeMsg REPEATE_SKILL = new CodeMsg(500501,"不能重复秒杀");
+
 	private CodeMsg(int code, String msg) {
 		this.code = code;
 		this.msg = msg;
