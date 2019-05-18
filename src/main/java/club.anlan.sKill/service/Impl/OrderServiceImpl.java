@@ -8,6 +8,7 @@ import club.anlan.sKill.service.OrderService;
 import club.anlan.sKill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -21,6 +22,7 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.getSkillOrderByUserIdGoodsId(userId, goodsId);
     }
 
+    @Transactional
     public OrderInfo createOrder(User user, GoodsVo goods) {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateDate(new Date());
@@ -41,5 +43,9 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.insertSKillOrder(sKillOrder);
 
         return orderInfo;
+    }
+
+    public OrderInfo getOrderById(long orderId) {
+        return orderMapper.getOrderById(orderId);
     }
 }

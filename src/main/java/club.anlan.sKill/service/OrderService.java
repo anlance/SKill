@@ -10,4 +10,6 @@ public interface OrderService {
     SKillOrder getSkillOrderByUserIdGoodsId(Long userId, long goodsId);
 
     OrderInfo createOrder(User user, GoodsVo goods);
+
+    OrderInfo getOrderById(long orderId);
 }

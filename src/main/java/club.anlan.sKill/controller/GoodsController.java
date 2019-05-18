@@ -2,9 +2,11 @@ package club.anlan.sKill.controller;
 
 import club.anlan.sKill.domain.User;
 import club.anlan.sKill.redis.GoodsKey;
+import club.anlan.sKill.result.Result;
 import club.anlan.sKill.service.GoodsService;
 import club.anlan.sKill.service.RedisService;
 import club.anlan.sKill.service.UserService;
+import club.anlan.sKill.vo.GoodsDetailVo;
 import club.anlan.sKill.vo.GoodsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,6 @@ public class GoodsController {
         return html;
     }
 
-
     @RequestMapping(value = "/to_detail/{goodsId}", produces = "text/html")
     @ResponseBody
     public String toDetail(HttpServletRequest request, HttpServletResponse response, Model model, User user, @PathVariable("goodsId") long goodsId) {
@@ -98,6 +99,34 @@ public class GoodsController {
             redisService.set(GoodsKey.getGoodsDetail, "", html);
         }
         return html;
+    }
+
+
+    @RequestMapping(value = "/detail/{goodsId}")
+    @ResponseBody
+    public Result<GoodsDetailVo> detail(User user, @PathVariable("goodsId") long goodsId) {
+        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
+        long startAt = goods.getStartDate().getTime();
+        long endAt = goods.getEndDate().getTime();
+        long now = System.currentTimeMillis();
+        int skillStatus = 0;
+        int remainSeconds = 0;
+        if (now < startAt) {//秒杀还没开始，倒计时
+            skillStatus = 0;
+            remainSeconds = (int) ((startAt - now) / 1000);
+        } else if (now > endAt) {//秒杀已经结束
+            skillStatus = 2;
+            remainSeconds = -1;
+        } else {//秒杀进行中
+            skillStatus = 1;
+            remainSeconds = 0;
+        }
+        GoodsDetailVo vo = new GoodsDetailVo();
+        vo.setGoods(goods);
+        vo.setUser(user);
+        vo.setRemainSeconds(remainSeconds);
+        vo.setSkillStatus(skillStatus);
+        return Result.success(vo);
     }
 
 }
