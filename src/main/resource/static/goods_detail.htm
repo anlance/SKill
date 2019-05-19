@@ -43,12 +43,13 @@
                 <span id="skillTip"></span>
             </td>
             <td>
-                <!--
-                    <form id="miaoshaForm" method="post" action="/miaosha/do_miaosha">
-                        <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
-                        <input type="hidden" name="goodsId"  id="goodsId" />
-                    </form>-->
-                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doSkill()">立即秒杀</button>
+                <div class="row">
+                    <div class="form-inline">
+                        <img id="verifyCodeImg" width="80" height="32"  style="display:none" onclick="refreshVerifyCode()"/>
+                        <input id="verifyCode"  class="form-control" style="display:none"/>
+                        <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSkillPath()">立即秒杀</button>
+                    </div>
+                </div>
                 <input type="hidden" name="goodsId" id="goodsId"/>
             </td>
         </tr>
@@ -68,6 +69,30 @@
 </div>
 </body>
 <script>
+
+    function getSkillPath(){
+        var goodsId = $("#goodsId").val();
+        g_showLoading();
+        $.ajax({
+            url:"/skill/getPath",
+            type:"GET",
+            data:{
+                goodsId:goodsId,
+                verifyCode:$("#verifyCode").val()
+            },
+            success:function(data){
+                if(data.code == 0){
+                    var path = data.data;
+                    doSkill(path);
+                }else{
+                    layer.msg(data.msg);
+                }
+            },
+            error:function(){
+                layer.msg("客户端请求有误");
+            }
+        });
+    }
 
     function getSkillResult(goodsId) {
         g_showLoading();
@@ -106,9 +131,9 @@
     }
 
 
-    function doSkill() {
+    function doSkill(path) {
         $.ajax({
-            url: "/skill/do_skill",
+            url: "/skill/"+path+"/do_skill",
             type: "POST",
             data: {
                 goodsId: $("#goodsId").val(),
@@ -186,10 +211,19 @@
                 clearTimeout(timeout);
             }
             $("#skillTip").html("秒杀进行中");
+            $("#verifyCodeImg").attr("src", "/skill/verifyCode?goodsId="+$("#goodsId").val());
+            $("#verifyCodeImg").show();
+            $("#verifyCode").show();
         } else {//秒杀已经结束
             $("#buyButton").attr("disabled", true);
             $("#skillTip").html("秒杀已经结束");
+            $("#verifyCodeImg").hide();
+            $("#verifyCode").hide();
         }
+    }
+
+    function refreshVerifyCode(){
+        $("#verifyCodeImg").attr("src", "/skill/verifyCode?goodsId="+$("#goodsId").val()+"&timestamp="+new Date().getTime());
     }
 
 </script>
