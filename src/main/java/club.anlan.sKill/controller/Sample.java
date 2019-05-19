@@ -1,6 +1,7 @@
 package club.anlan.sKill.controller;
 
 import club.anlan.sKill.domain.User;
+import club.anlan.sKill.rabbitmq.MQSender;
 import club.anlan.sKill.redis.UserKey;
 import club.anlan.sKill.result.Result;
 import club.anlan.sKill.service.RedisService;
@@ -22,11 +23,6 @@ public class Sample {
     @Autowired
     private RedisService redisService;
 
-    @RequestMapping("/hello")
-    public String thymeleaf(Model model){
-        model.addAttribute("name","faker");
-        return "hello";
-    }
 
     @RequestMapping("/db/get")
     @ResponseBody

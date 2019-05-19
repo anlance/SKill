@@ -34,11 +34,11 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        long orderId= orderMapper.insert(orderInfo);
+        orderMapper.insert(orderInfo);
 
         SKillOrder sKillOrder = new SKillOrder();
         sKillOrder.setGoodsId(goods.getId());
-        sKillOrder.setOrderId(orderId);
+        sKillOrder.setOrderId(orderInfo.getId());
         sKillOrder.setUserId(user.getId());
         orderMapper.insertSKillOrder(sKillOrder);
 

@@ -23,10 +23,11 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsMapper.getGoodsVoByGoodsId(goodsId);
     }
 
-    public void reduceStock(GoodsVo goods) {
+    public boolean reduceStock(GoodsVo goods) {
         SKillGoods sg = new SKillGoods();
         sg.setGoodsId(goods.getId());
         sg.setStockCount(goods.getStockCount()-1);
-        goodsMapper.reduceStock(sg);
+        int ret = goodsMapper.reduceStock(sg);
+        return ret > 0;
     }
 }

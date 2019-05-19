@@ -7,4 +7,6 @@ import club.anlan.sKill.vo.GoodsVo;
 public interface SkillService {
 
     OrderInfo doSkill(User user, GoodsVo goods);
+
+    long getSkillResult(Long userId, long goodsId);
 }

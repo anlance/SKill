@@ -16,35 +16,19 @@ public class RedisServiceImpl implements RedisService {
     @Autowired
     private JedisPool jedisPool;
 
-    /**
-     * 获取单个对象
-     * @param keyPrefix
-     * @param key
-     * @param clazz
-     * @param <T>
-     * @return
-     */
     public <T> T get(KeyPrefix keyPrefix,String key, Class<T> clazz) {
         Jedis jedis = null;
         try{
             jedis = jedisPool.getResource();
             String realKey = keyPrefix.getPrefix()+key;
             String str = jedis.get(realKey);
-            T t = StringToBean(str,clazz);
+            T t = stringToBean(str,clazz);
             return t;
         } finally {
             returnToPool(jedis);
         }
     }
 
-    /**
-     * 设置对象
-     * @param keyPrefix
-     * @param key
-     * @param value
-     * @param <T>
-     * @return
-     */
     public <T> boolean set(KeyPrefix keyPrefix, String key, T value) {
         Jedis jedis = null;
         try{
@@ -66,15 +50,7 @@ public class RedisServiceImpl implements RedisService {
         }
     }
 
-    /**
-     * 判断 key 是否存在
-     * @param keyPrefix
-     * @param key
-     * @param value
-     * @param <T>
-     * @return
-     */
-    public <T> boolean exists(KeyPrefix keyPrefix, String key, T value) {
+    public <T> boolean exists(KeyPrefix keyPrefix, String key) {
         Jedis jedis = null;
         try{
             jedis = jedisPool.getResource();
@@ -85,15 +61,8 @@ public class RedisServiceImpl implements RedisService {
         }
     }
 
-    /**
-     * 增加值
-     * @param keyPrefix
-     * @param key
-     * @param value
-     * @param <T>
-     * @return
-     */
-    public <T> Long incr(KeyPrefix keyPrefix, String key, T value) {
+
+    public <T> Long incr(KeyPrefix keyPrefix, String key) {
         Jedis jedis = null;
         try{
             jedis = jedisPool.getResource();
@@ -104,15 +73,7 @@ public class RedisServiceImpl implements RedisService {
         }
     }
 
-    /**
-     * 减少值
-     * @param keyPrefix
-     * @param key
-     * @param value
-     * @param <T>
-     * @return
-     */
-    public <T> Long decr(KeyPrefix keyPrefix, String key, T value) {
+    public <T> Long decr(KeyPrefix keyPrefix, String key) {
         Jedis jedis = null;
         try{
             jedis = jedisPool.getResource();
@@ -124,7 +85,7 @@ public class RedisServiceImpl implements RedisService {
     }
 
 
-    private <T> String beanToString(T value) {
+    public static <T> String beanToString(T value) {
         if(value==null){
             return null;
         }
@@ -140,7 +101,7 @@ public class RedisServiceImpl implements RedisService {
         }
     }
 
-    private <T> T StringToBean(String str, Class<T> clazz) {
+    public static <T> T stringToBean(String str, Class<T> clazz) {
         if(str==null || str.length()<=0 || clazz==null) {
             return null;
         } else if(clazz==int.class || clazz==Integer.class){

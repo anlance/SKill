@@ -1,0 +1,17 @@
+
+//// erlang
+//yum install ncurses-devel
+//./configure --prefix=/usr/local/erlang20 --enable-hipe --enable-threads --enable-smp-support --enable-kernel-poll --without-javac
+//make && install
+
+////RabbitMQ
+//yum install python -y
+//yum install xmlto
+//yum install python-simplejson
+//解压
+
+
+// ubuntu erlang+rabbitMQ
+sudo apt-get install erlang-nox
+sudo apt-get update
+sudo apt-get install rabbitmq-server
